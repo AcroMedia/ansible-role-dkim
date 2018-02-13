@@ -20,7 +20,23 @@
 
 - name: opendkim directory present
   file: path=/etc/opendkim state=directory
-  file: path=/etc/opendkim/keys state=directory
+
+- name: opendkim keys directory present
+  file:
+    path: /etc/opendkim/keys
+    state: directory
+    owner: opendkim
+    group: wheel
+    mode: 0750
+
+- name: opendkim domain directories present
+  file:
+    state: directory
+    path: "/etc/opendkim/keys/{{ item }}"
+    owner: opendkim
+    group: wheel
+    mode: 0750
+  with_items: "{{ dkim_domains }}"
 
 - name: opendkim TrustedHosts present
   template: src=TrustedHosts.j2 dest=/etc/opendkim/TrustedHosts
@@ -42,18 +58,17 @@
   notify:
    - restart opendkim
 
-- name: ensure signing key is present
-  stat: path=/etc/opendkim/keys/{{ dkim_selector }}.private get_md5=no
-  register: dkim_key
-
-- name: generate signing key
-  shell: opendkim-genkey -s {{ dkim_selector }} -d {{ dkim_domains[0] }} -D /etc/opendkim/keys
-  when: not dkim_key.stat.exists
+- name: generate signing key if not present
+  shell: opendkim-genkey -s {{ dkim_selector }} -d {{ item }} -D /etc/opendkim/keys/{{ item }}
+  args:
+    creates: "/etc/opendkim/keys/{{ item }}/{{ dkim_selector }}.private"
+  with_items: "{{ dkim_domains }}"
   notify:
    - restart opendkim
 
 - name: ensure signing key owner
-  file: path=/etc/opendkim/keys/{{ dkim_selector }}.private owner=opendkim group=opendkim
+  file: path=/etc/opendkim/keys/{{ item }}/{{ dkim_selector }}.private owner=opendkim group=opendkim
+  with_items: "{{ dkim_domains }}"
 
 - name: opendkim is running
   service: name=opendkim state=running enabled=yes

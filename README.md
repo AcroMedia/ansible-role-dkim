@@ -1,6 +1,8 @@
 # ansible-dkim
 Ansible role for opendkim with postfix configuration on ubuntu
 
+Also works for CentOS 6, **BUT** you will need to add an opendkim SELinux policy separately, otherwise the service will not restart.
+
 ### Example playbook
 ```yaml
 ---

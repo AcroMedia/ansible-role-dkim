@@ -1,21 +1,29 @@
 ---
-- name: opendkim packages are installed
+- name: opendkim packages are installed (debian-ish)
   apt: pkg={{ item }} state=installed
   with_items:
    - opendkim
    - opendkim-tools
+  when: ansible_os_family == 'Debian'
+
+- name: opendkim packages are installed (redhat-ish)
+  yum: name={{ item }} state=installed
+  with_items:
+   - opendkim
+  when: ansible_os_family == 'RedHat'
 
 - name: opendkim socket configured
   lineinfile: dest=/etc/default/opendkim regexp=^SOCKET= line='SOCKET="inet:12301@localhost"'
   notify:
    - restart opendkim
+  when: ansible_os_family == 'Debian'
 
 - name: opendkim directory present
   file: path=/etc/opendkim state=directory
   file: path=/etc/opendkim/keys state=directory
 
 - name: opendkim TrustedHosts present
-  copy: src=TrustedHosts dest=/etc/opendkim/TrustedHosts
+  template: src=TrustedHosts.j2 dest=/etc/opendkim/TrustedHosts
   notify:
    - restart opendkim
 

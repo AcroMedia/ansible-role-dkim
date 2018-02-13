@@ -1,6 +1,6 @@
 ---
 - name: postfix is installed
-  apt: pkg=postfix state=installed
+  package: name=postfix state=present
   tags: postfix
 
 - name: postfix milter_protocol is configured

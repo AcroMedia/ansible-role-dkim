@@ -4,8 +4,9 @@ UMask                   002
 Syslog                  yes
 SyslogSuccess           Yes
 LogWhy                  Yes
+{% if admin_email is defined %}
 ReportAddress           {{ admin_email }}
-
+{% endif %}
 Canonicalization        relaxed/simple
 
 ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts

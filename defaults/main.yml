@@ -1,0 +1,6 @@
+---
+# @TODO: Steal the variable style from https://github.com/MatthewMi11er/ansible-role-opendkim/blob/master/defaults/main.yml so the dkim_selector can be per domain.
+
+dkim_milter_protocol: 6
+dkim_selector: 'default'
+dkim_milter_port: 12301

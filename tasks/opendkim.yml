@@ -13,7 +13,7 @@
   when: ansible_os_family == 'RedHat'
 
 - name: opendkim socket configured
-  lineinfile: dest=/etc/default/opendkim regexp=^SOCKET= line='SOCKET="inet:12301@localhost"'
+  lineinfile: dest=/etc/default/opendkim regexp=^SOCKET= line='SOCKET="inet:{{ dkim_milter_port }}@localhost"'
   notify:
    - restart opendkim
   when: ansible_os_family == 'Debian'

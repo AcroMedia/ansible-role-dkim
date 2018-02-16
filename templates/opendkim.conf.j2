@@ -1,5 +1,3 @@
-AutoRestart             Yes
-AutoRestartRate         10/1h
 UMask                   002
 Syslog                  yes
 SyslogSuccess           Yes
@@ -9,15 +7,13 @@ ReportAddress           {{ admin_email }}
 {% endif %}
 Canonicalization        relaxed/simple
 
-ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts
-InternalHosts           refile:/etc/opendkim/TrustedHosts
-KeyTable                refile:/etc/opendkim/KeyTable
+ExternalIgnoreList      /etc/opendkim/TrustedHosts
+InternalHosts           /etc/opendkim/TrustedHosts
+KeyTable                /etc/opendkim/KeyTable
 SigningTable            refile:/etc/opendkim/SigningTable
 
 Mode                    sv
-PidFile                 /var/run/opendkim/opendkim.pid
-SignatureAlgorithm      rsa-sha256
 
 UserID                  opendkim:opendkim
 
-Socket                  inet:12301@localhost
+Socket                  inet:{{ dkim_milter_port }}@localhost

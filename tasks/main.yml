@@ -1,3 +1,4 @@
 ---
+- include_vars: "vars/{{ ansible_os_family }}.yml"
 - include: opendkim.yml
 - include: postfix.yml

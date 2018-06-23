@@ -6,9 +6,6 @@ A simple Ansible role for adding opendkim to postfix. The role will install post
 
 - Ubuntu 14 or CentOS 6
 
-If using CentOS, you will need to add an opendkim SELinux policy separately, otherwise you will experience weird errors.
-
-
 ### Role variables
 - `dkim_selector`
 
@@ -24,7 +21,7 @@ If using CentOS, you will need to add an opendkim SELinux policy separately, oth
 
   Optional. For servers that need to sign mail from domains that don't have their own key (ie. a web server with multiple virtual hosts on it).
 
-  If used, end users will see things like:
+  Caveat: If you use the "wildcard sign all" option, email recipients may see things like:
 
   ```
   From: sender@somedomain.com (via example.org)
@@ -39,7 +36,7 @@ If using CentOS, you will need to add an opendkim SELinux policy separately, oth
 
 ### Dependencies
 
-None.
+If you're using CentOS, you will need to apply an opendkim SELinux policy separately, otherwise you will experience errors.
 
 
 ### Example playbook

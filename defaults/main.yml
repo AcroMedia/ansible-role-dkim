@@ -4,3 +4,5 @@
 dkim_milter_protocol: 6
 dkim_selector: 'default'
 dkim_milter_port: 12301
+dkim_wildcard_sign_all_with_domain: ''
+path_to_wildcard_key: ''

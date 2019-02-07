@@ -2,7 +2,7 @@
 *@{{ domain }} {{ dkim_selector }}._domainkey.{{ domain }}
 {% endfor %}
 
-{% if dkim_wildcard_sign_all_with_domain is defined
+{% if dkim_wildcard_sign_all_with_domain | trim() != ''
   and dkim_wildcard_sign_all_with_domain in dkim_domains %}
 * {{ dkim_selector }}._domainkey.{{ dkim_wildcard_sign_all_with_domain }}
 {% endif %}

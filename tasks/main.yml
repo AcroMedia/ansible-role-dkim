@@ -1,4 +1,21 @@
 ---
 - include_vars: "vars/{{ ansible_os_family }}.yml"
+
+- name: Upload DKIM private key for wildcard signing by '{{ dkim_wildcard_sign_all_with_domain }}'
+  copy:
+    src: "{{ path_to_wildcard_key }}"
+    dest: "/etc/opendkim/keys/{{ dkim_wildcard_sign_all_with_domain }}/default.private"
+    mode: 0400
+    owner: opendkim
+    group: opendkim
+    force: true
+    backup: true
+  notify:
+    - restart postfix
+    - restart opendkim
+  when: path_to_wildcard_key | trim() != ''
+    and dkim_wildcard_sign_all_with_domain | trim() != ''
+
 - include: opendkim.yml
+
 - include: postfix.yml

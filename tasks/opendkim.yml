@@ -1,15 +1,17 @@
 ---
 - name: opendkim packages are installed (debian-ish)
-  apt: pkg={{ item }} state=installed
-  with_items:
-   - opendkim
-   - opendkim-tools
+  apt:
+    pkg:
+      - opendkim
+      - opendkim-tools
+    state: present
   when: ansible_os_family == 'Debian'
 
 - name: opendkim packages are installed (redhat-ish)
-  yum: name={{ item }} state=installed
-  with_items:
-   - opendkim
+  yum:
+    name:
+      - opendkim
+    state: present
   when: ansible_os_family == 'RedHat'
 
 - name: opendkim socket configured

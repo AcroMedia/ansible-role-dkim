@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: ansible-role-dkim
+  vars:
+    override: "{{ lookup('env', 'TEST') }}"
+    test_environment: "{{ (override | length > 0) | ternary(override, true) }}"

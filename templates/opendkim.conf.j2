@@ -2,8 +2,8 @@ UMask                   002
 Syslog                  yes
 SyslogSuccess           Yes
 LogWhy                  Yes
-{% if admin_email is defined %}
-ReportAddress           {{ admin_email }}
+{% if dkim_report_recipient is defined %}
+ReportAddress           {{ dkim_report_recipient }}
 {% endif %}
 Canonicalization        relaxed/simple
 

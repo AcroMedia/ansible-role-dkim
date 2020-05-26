@@ -39,11 +39,11 @@ A simple Ansible role for adding opendkim to postfix. The role will install post
 
 
 
-- `admin_email`
+- `dkim_report_recipient`
 
-  Optional.
+  Optional: Who will receive signature failure reports?
 
-- `path_to_wildcard_key`
+- `dkim_path_to_wildcard_key`
 
 Optional. The path (on your local machine) to the private key that will be used for wildcard signing. If specified, the role will upload it to `/etc/opendkim/keys/{{ dkim_wildcard_sign_all_with_domain }}/default.private` on your server. **Be sure to avoid committing private keys to repositories.**
 
@@ -66,7 +66,7 @@ Let the role generate keys for each app node in your system:
         dkim_selector: "{{ inventory_hostname_short }}"
         dkim_domains:
          - example.com
-        admin_email: somebody@example.com
+        dkim_report_recipient: somebody@example.com
         # You'll need to log in and retreive public
         # keys and create DNS records from each app node
         # after the role is done.
@@ -85,8 +85,8 @@ Take responsibility for all outgoing mail on your server:
          - example.org
          - domain2.tld
         dkim_wildcard_sign_all_with_domain: example.org
-        admin_email: somebody@example.org
-        path_to_wildcard_key: /local/path/to/private/dkim-rsa-keys/example.org.key
+        dkim_report_recipient: somebody@example.org
+        dkim_path_to_wildcard_key: /local/path/to/private/dkim-rsa-keys/example.org.key
         # Since you have the private key, you can create DNS
         # records for DKIM beforehand.
 ```

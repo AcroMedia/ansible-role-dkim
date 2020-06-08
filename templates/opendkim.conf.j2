@@ -2,7 +2,8 @@ UMask                   002
 Syslog                  yes
 SyslogSuccess           Yes
 LogWhy                  Yes
-{% if dkim_report_recipient is defined %}
+{% if dkim_report_recipient is defined
+  and dkim_report_recipient | trim != '' %}
 ReportAddress           {{ dkim_report_recipient }}
 {% endif %}
 Canonicalization        relaxed/simple

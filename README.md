@@ -35,7 +35,7 @@ A simple Ansible role for adding opendkim to postfix. The role will install post
   ```
   Where `somedomain.com` is the website that generated the email, but does not have its own DKIM key, and `example.org` is the domain key used to sign the outgoing message.
 
-  Caveat No. 2: You must also include `dkim_wildcard_sign_all_with_domain` in your list of `dkim_domains`.
+  Caveat No. 2: You must also include the value specified for `dkim_wildcard_sign_all_with_domain` in your list of `dkim_domains`.
 
 
 

@@ -102,9 +102,16 @@ For Ubuntu, the public half will be on the server at:
 Its contents will look something like:
 ```
 foo._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
-	  "p=MIGfMxxxTruncatedForReadabilityXXXIDAQAB" )  ; ----- DKIM key foo for example.com
+	  "p=MIGfMx... truncated for readability ...XIDAQAB" )  ; ----- DKIM public key "foo" selector for "example.com" domain
 ```
 Which you would use to create a DNS TXT record that looks like:
 ```
-foo._domainkey.example.com. 3600 IN TXT "v=DKIM1; k=rsa; p=MIGfMxxxTruncatedForReadabilityXXXIDAQAB"
+foo._domainkey.example.com. 3600 IN TXT "v=DKIM1; k=rsa; p=MIGfMx... truncated for readability ...XIDAQAB"
 ```
+
+If you generated your own private RSA key, the easiest way to extract the public half in the correct format is with ssh-keygen:
+```bash 
+ssh-keygen -y -f /path/to/rsa-private-key  
+# ^^^ The public key will be everything after the `ssh-rsa` prefix
+```
+You can also extract it with `openssl rsa -in /path/to/rsa-private-key -pubout` but then you have to extract the key and strip line breaks, which is more work.

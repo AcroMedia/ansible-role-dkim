@@ -51,7 +51,7 @@ Optional. The path (on your local machine) to the private key that will be used 
 
 - If postfix isn't already installed, this role will install it.
 
-- If you're using CentOS, you will need to apply an opendkim SELinux policy separately, otherwise you will experience errors.
+- If you're using RedHat / CentOS, you will need to apply an opendkim SELinux policy separately, otherwise you will experience errors.
 
 
 ### Example playbooks
@@ -61,7 +61,11 @@ Let the role generate keys for each app node in your system:
 - hosts: app-nodes
   become: true
   roles:
-    - role: AcroMedia.dkim
+    - role: acromedia.postfix
+      vars:
+        default_mail_recipient: somebody@example.com
+
+    - role: acromedia.dkim
       vars:
         dkim_selector: "{{ inventory_hostname_short }}"
         dkim_domains:
@@ -78,7 +82,11 @@ Take responsibility for all outgoing mail on your server:
 - hosts: my-shared-server-with-many-vhosts-and-domains
   become: true
   roles:
-    - role: AcroMedia.dkim
+    - role: acromedia.postfix
+      vars:
+        default_mail_recipient: somebody@example.com
+
+    - role: acromedia.dkim
       vars:
         dkim_selector: default
         dkim_domains:
@@ -110,7 +118,7 @@ foo._domainkey.example.com. 3600 IN TXT "v=DKIM1; k=rsa; p=MIGfMx... truncated f
 ```
 
 If you generated your own private RSA key, the easiest way to extract the public half in the correct format is with ssh-keygen:
-```bash 
+```bash
 ssh-keygen -y -f /path/to/rsa-private-key  
 # ^^^ The public key will be everything after the `ssh-rsa` prefix
 ```

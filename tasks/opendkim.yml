@@ -1,100 +1,107 @@
 ---
-- name: opendkim packages are installed (debian-ish)
-  apt:
-    pkg:
-      - opendkim
-      - opendkim-tools
-    state: present
-  when: ansible_os_family == 'Debian'
+- name: Install OpenDKIM
+  include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: opendkim packages are installed (redhat-ish)
-  yum:
-    name:
-      - opendkim
-    state: present
-  when: ansible_os_family == 'RedHat'
-
-- name: opendkim socket configured
+- name: Configure opendkim socket
   lineinfile: dest=/etc/default/opendkim regexp=^SOCKET= line='SOCKET="inet:{{ dkim_milter_port }}@localhost"'
   notify:
    - restart opendkim
   when: ansible_os_family == 'Debian'
 
-- name: opendkim directory present
-  file: path=/etc/opendkim state=directory
+- name: Create opendkim directory
+  file:
+    path: /etc/opendkim
+    state: directory
 
-- name: opendkim keys directory present
+- name: Create opendkim keys directory
   file:
     path: /etc/opendkim/keys
     state: directory
     owner: opendkim
     group: "{{ administrative_group }}"
-    mode: 0750
+    mode: '0750'
 
-- name: opendkim domain directories present
+- name: Create private key domain directories
   file:
     state: directory
-    path: "/etc/opendkim/keys/{{ item }}"
+    path: "/etc/opendkim/keys/{{ item.name }}"
     owner: opendkim
     group: "{{ administrative_group }}"
-    mode: 0750
-  with_items: "{{ dkim_domains }}"
+    mode: '0750'
+  loop: "{{ dkim_domains }}"
 
-- name: Upload DKIM private key for wildcard signing by '{{ dkim_wildcard_sign_all_with_domain }}'
+- name: Copy Private Key(s)
   copy:
-    src: "{{ dkim_path_to_wildcard_key }}"
-    dest: "/etc/opendkim/keys/{{ dkim_wildcard_sign_all_with_domain }}/default.private"
-    mode: 0400
-    owner: opendkim
-    group: opendkim
-    force: true
-    backup: true
+      content: '{{ item.private_key }}'
+      dest: '/etc/opendkim/keys/{{ item.name }}/{{ item.selector }}.private'
+  when: item.private_key is defined
+    and (item.private_key | trim) != ''
+  loop: "{{ dkim_domains }}"
   notify:
     - restart postfix
     - restart opendkim
-  when: dkim_path_to_wildcard_key | trim() != ''
-    and dkim_wildcard_sign_all_with_domain | trim() != ''
 
-- name: opendkim TrustedHosts present
-  template: src=TrustedHosts.j2 dest=/etc/opendkim/TrustedHosts
-  notify:
-   - restart opendkim
-
-- name: opendkim is configured
-  template: src=opendkim.conf.j2 dest=/etc/opendkim.conf
-  notify:
-   - restart opendkim
-
-- name: opendkim KeyTable is configured
-  template: src=KeyTable.j2 dest=/etc/opendkim/KeyTable
-  notify:
-   - restart opendkim
-
-- name: opendkim SigningTable is configured
-  template: src=SigningTable.j2 dest=/etc/opendkim/SigningTable
-  notify:
-   - restart opendkim
-
-- name: generate signing key if not present
-  shell: opendkim-genkey -s {{ dkim_selector }} -d {{ item }} -D /etc/opendkim/keys/{{ item }}
+- name: Generate Private Key(s)
+  command: >
+    opendkim-genkey
+    --bits={{ dkim_generated_key_size }}
+    --selector={{ item.selector }}
+    --domain={{ item.name }}
+    --append-domain
+    --directory=/etc/opendkim/keys/{{ item.name }}
   args:
-    creates: "/etc/opendkim/keys/{{ item }}/{{ dkim_selector }}.private"
-  with_items: "{{ dkim_domains }}"
+    creates: /etc/opendkim/keys/{{ item.name }}/{{ item.selector }}.private
+  when: item.private_key is not defined
+    or item.private_key == ''
+  loop: "{{ dkim_domains }}"
+  register: opendkim_keys_generated
+  notify:
+    - restart postfix
+    - restart opendkim
+
+- name: Apply opendkim TrustedHosts config
+  template:
+    src: TrustedHosts.j2
+    dest: /etc/opendkim/TrustedHosts
   notify:
    - restart opendkim
 
-- name: ensure signing key owner
-  file: path=/etc/opendkim/keys/{{ item }}/{{ dkim_selector }}.private owner=opendkim group=opendkim
-  with_items: "{{ dkim_domains }}"
+- name: Apply opendkim KeyTable config
+  template:
+    src: KeyTable.j2
+    dest: /etc/opendkim/KeyTable
+  notify:
+   - restart opendkim
 
-- name: 'Fix incomplete ubuntu/systemd opendkim installation. See https://askubuntu.com/questions/1117330/opendkim-wont-start-cant-open-pid-file'
+- name: Apply opendkim SigningTable config
+  template:
+    src: SigningTable.j2
+    dest: /etc/opendkim/SigningTable
+  notify:
+   - restart opendkim
+
+- name: Apply opendkim main config
+  template:
+    src: opendkim.conf.j2
+    dest: /etc/opendkim.conf
+  notify:
+   - restart opendkim
+
+- name: Enforce private key ownership
+  file:
+    path: /etc/opendkim/keys/{{ item.name }}/{{ item.selector }}.private
+    owner: opendkim
+    group: opendkim
+  loop: "{{ dkim_domains }}"
+
+- name: Fix incomplete ubuntu18/systemd opendkim installation. See https://askubuntu.com/questions/1117330/opendkim-wont-start-cant-open-pid-file
 # And also, https://serverfault.com/a/847442/41284
 # Original issue: https://bugs.debian.org/cgi-bin/bugreport.cgi?archive=no&bug=861169
   shell: >
     /lib/opendkim/opendkim.service.generate && systemctl daemon-reload && service opendkim restart
   when: (dkim_apply_ubuntu_fix is defined) and (dkim_apply_ubuntu_fix == true)    #  Just send this on your command line as extra vars to fire it.
 
-- name: opendkim is running
+- name: Ensure opendkim service is enabled and running
   service:
     name: opendkim
     state: started

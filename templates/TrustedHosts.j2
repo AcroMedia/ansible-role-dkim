@@ -1,3 +1,5 @@
-127.0.0.1
-localhost
-{{ ansible_default_ipv4.address }}
+# {{ ansible_managed }}
+
+{% for host in dkim_trusted_hosts %}
+{{ host }}
+{% endfor %}

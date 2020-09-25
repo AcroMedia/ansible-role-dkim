@@ -5,6 +5,9 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - trusty
+        - xenial
+        - bionic
+        - focal
     - name: EL
       versions:
         - 6

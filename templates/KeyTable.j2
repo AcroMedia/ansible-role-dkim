@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 {% for domain in dkim_domains %}
-{{ dkim_selector }}._domainkey.{{ domain }} {{ domain }}:{{ dkim_selector }}:/etc/opendkim/keys/{{ domain}}/{{ dkim_selector }}.private
+{{ domain.selector }}._domainkey.{{ domain.name }} {{ domain.name }}:{{ domain.selector }}:/etc/opendkim/keys/{{ domain.name }}/{{ domain.selector }}.private
 {% endfor %}

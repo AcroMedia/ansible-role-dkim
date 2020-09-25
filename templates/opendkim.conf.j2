@@ -1,19 +1,20 @@
+# {{ ansible_managed }}
+
 UMask                   002
 Syslog                  yes
 SyslogSuccess           Yes
 LogWhy                  Yes
-{% if dkim_report_recipient is defined
-  and dkim_report_recipient | trim != '' %}
+{% if (dkim_report_recipient | trim) != '' %}
 ReportAddress           {{ dkim_report_recipient }}
 {% endif %}
-Canonicalization        relaxed/simple
+Canonicalization        {{ dkim_canonicalization }}
 
 ExternalIgnoreList      /etc/opendkim/TrustedHosts
 InternalHosts           /etc/opendkim/TrustedHosts
 KeyTable                /etc/opendkim/KeyTable
 SigningTable            refile:/etc/opendkim/SigningTable
 
-Mode                    sv
+Mode                    {{ dkim_mode }}
 
 UserID                  opendkim:opendkim
 

@@ -1,8 +1,5 @@
-{% for domain in dkim_domains %}
-*@{{ domain }} {{ dkim_selector }}._domainkey.{{ domain }}
-{% endfor %}
+# {{ ansible_managed }}
 
-{% if dkim_wildcard_sign_all_with_domain | trim() != ''
-  and dkim_wildcard_sign_all_with_domain in dkim_domains %}
-* {{ dkim_selector }}._domainkey.{{ dkim_wildcard_sign_all_with_domain }}
-{% endif %}
+{% for domain in dkim_domains %}
+{{ domain.signing_table_pattern }} {{ domain.selector }}._domainkey.{{ domain.name }}
+{% endfor %}

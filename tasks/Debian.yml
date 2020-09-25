@@ -1,0 +1,7 @@
+---
+- name: Install opendkim packages (Debian)
+  apt:
+    name:
+      - opendkim
+      - opendkim-tools
+    state: present

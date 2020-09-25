@@ -17,9 +17,9 @@ If postfix isn't present yet, the role will try and install it, but that's reall
 
 ### Example playbooks
 
-#### Single server: Let the role generate a private key for you
+See also: [Role Variables](#role-variables)
 
-See also: Role Variables
+#### Single server: Let the role generate a private key for you
 
 ```yaml
 ---
@@ -63,9 +63,7 @@ See also: Role Variables
 
 ### Role variables
 
-See also: [Exmaple Playbooks](#Example%20Playbooks) above.
-
-See also: [defaults/main.yml](defaults/main.yml) for less frequently used variables.
+Refer to [Exmaple Playbooks](#example-playbooks) for usage. See also: [defaults/main.yml](defaults/main.yml) for less frequently used variables.
 
 #### dkim_domains[]:
 

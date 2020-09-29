@@ -34,6 +34,9 @@
   copy:
       content: '{{ item.private_key }}'
       dest: '/etc/opendkim/keys/{{ item.name }}/{{ item.selector }}.private'
+      mode: '0400'
+      owner: opendkim
+      group: opendkim
   when: item.private_key is defined
     and (item.private_key | trim) != ''
   loop: "{{ dkim_domains }}"

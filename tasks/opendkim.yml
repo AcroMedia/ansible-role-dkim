@@ -33,7 +33,17 @@
     label: "{{ item.selector + '._domainkey.' + item.name }}"
 - name: Copy Private Key(s)
   copy:
-      content: '{{ item.private_key }}'
+      ###### THE LINE BELOW {{ item.private_key }} IS INTENTIONALLY BLANK ####
+      # If the content of `item.private_key` arrived here from the result of a
+      # `lookup('file'/path/to/key)`, then the variable content won't have a
+      # trailing newline, which poses a problem for private key files.
+      # See https://github.com/ansible/ansible/issues/30829#issuecomment-331904024
+      # TL;DR We need to ensure the resulting key file ends with a newline.
+      ###### THE LINE BELOW {{ item.private_key }} IS INTENTIONALLY BLANK ####
+      content: |
+       {{ item.private_key }}
+
+      ###### THE LINE ABOVE THIS ONE IS INTENTIONALLY BLANK ###################
       dest: '/etc/opendkim/keys/{{ item.name }}/{{ item.selector }}.private'
       mode: '0400'
       owner: opendkim

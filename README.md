@@ -35,7 +35,7 @@ See also: [Role Variables](#role-variables)
         dkim_domains:
           - name: example.com
             selector: default
-            private_key: ''
+            private_key: ''  # Lets the role generate the private key.
             signing_table_pattern: '*@example.com'
         dkim_report_recipient: postmaster@example.com
 ```
@@ -56,7 +56,8 @@ See also: [Role Variables](#role-variables)
         dkim_domains:
           - name: example.com
             selector: default
-            private_key: "{{ lookup('file', 'templates/my-responsibly-vault-encrypted-private-key.j2') }}"
+            # Use lookup() to set the value of `private_key` to be the decrypted content of a vault-encrypted template file
+            private_key: "{{ lookup('file', 'templates/my-responsibly-vault-encrypted-private-key.j2') }}"  
             signing_table_pattern: '*@example.com'
         dkim_report_recipient: postmaster@example.com
 ```

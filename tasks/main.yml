@@ -5,7 +5,7 @@
       - dkim_domains is iterable
       - dkim_domains is not string
       - (dkim_domains | length) > 0
-    msg: Your dkim_domains list is invalid. Please review the dkim role's readme for required variables.
+    msg: Your dkim_domains list is invalid. Please review the dkim role's README.md for required variables.
 
 - name: Prevent the role from running without a properly configured dkim_domains array 2 of 2
   assert:
@@ -16,8 +16,11 @@
       - item.selector != ''
       - item.signing_table_pattern is defined
       - item.signing_table_pattern != ''
-    msg: Your dkim_domains list is invalid. Please review the dkim role's readme for required variables.
+    msg: Your dkim_domains list is invalid. Please review the dkim role's README.md for required variables.
+    quiet: true
   loop: "{{ dkim_domains }}"
+  loop_control:
+    label: "{{ (item.selector | default('error')) + '._domainkey.' + (item.name | default('error')) }}"
 
 - include_vars: "vars/{{ ansible_os_family }}.yml"
 

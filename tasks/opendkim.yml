@@ -29,7 +29,8 @@
     group: "{{ administrative_group }}"
     mode: '0750'
   loop: "{{ dkim_domains }}"
-
+  loop_control:
+    label: "{{ item.selector + '._domainkey.' + item.name }}"
 - name: Copy Private Key(s)
   copy:
       content: '{{ item.private_key }}'
@@ -40,6 +41,8 @@
   when: item.private_key is defined
     and (item.private_key | trim) != ''
   loop: "{{ dkim_domains }}"
+  loop_control:
+    label: "{{ item.selector + '._domainkey.' + item.name }}"
   notify:
     - restart postfix
     - restart opendkim
@@ -57,6 +60,8 @@
   when: item.private_key is not defined
     or item.private_key == ''
   loop: "{{ dkim_domains }}"
+  loop_control:
+    label: "{{ item.selector + '._domainkey.' + item.name }}"
   register: opendkim_keys_generated
   notify:
     - restart postfix
@@ -96,6 +101,8 @@
     owner: opendkim
     group: opendkim
   loop: "{{ dkim_domains }}"
+  loop_control:
+    label: "{{ item.selector + '._domainkey.' + item.name }}"
 
 - name: Fix incomplete ubuntu18/systemd opendkim installation. See https://askubuntu.com/questions/1117330/opendkim-wont-start-cant-open-pid-file
 # And also, https://serverfault.com/a/847442/41284

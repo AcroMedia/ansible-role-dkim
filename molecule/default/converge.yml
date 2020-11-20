@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    dkim_domains:
+      - name: example.com
+        selector: default
+        private_key: ''  # Lets the role generate the private key.
+        signing_table_pattern: '*@example.com'
+    dkim_report_recipient: postmaster@example.com
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      changed_when: false
+  roles:
+    - role: ansible-role-dkim

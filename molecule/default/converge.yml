@@ -5,15 +5,17 @@
 
   vars:
     dkim_domains:
-      - name: example.com
+      - name: aws1.acrobuild.com
         selector: default
         private_key: ''  # Lets the role generate the private key.
-        signing_table_pattern: '*@example.com'
-    dkim_report_recipient: postmaster@example.com
+        signing_table_pattern: '*@acrobuild.com'
+    dkim_report_recipient: postmaster@acrobuild.com
 
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=true cache_valid_time=600
       changed_when: false
+      when: ansible_facts['os_family'] == 'Debian'
+
   roles:
     - role: ansible-role-dkim

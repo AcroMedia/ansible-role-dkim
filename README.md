@@ -1,4 +1,5 @@
 # acromedia.ansible-role-dkim
+![.github/workflows/molecule.yml](https://github.com/AcroMedia/ansible-role-dkim/workflows/.github/workflows/molecule.yml/badge.svg)
 
 Add OpenDKIM to Postfix.
 

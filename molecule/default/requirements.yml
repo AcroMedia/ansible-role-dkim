@@ -1,0 +1,6 @@
+---
+
+- name: contrib/acromedia.postfix
+  src: https://github.com/AcroMedia/ansible-role-postfix
+  version: origin/master
+

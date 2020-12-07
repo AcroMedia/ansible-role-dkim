@@ -21,6 +21,13 @@
       when: ansible_os_family == 'RedHat'
 
 
-
+- name:  Install role dependencies that acromedia.virtual-host will need
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    postfix_inet_interfaces: 127.0.0.1
+  roles:
+    - contrib/acromedia.postfix
 
 

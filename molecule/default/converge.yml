@@ -10,6 +10,6 @@
         private_key: ''  # Lets the role generate the private key.
         signing_table_pattern: '*@example.com'
     dkim_report_recipient: postmaster@example.com
-
+    postfix_inet_interfaces: 127.0.0.1
   roles:
     - role: ansible-role-dkim

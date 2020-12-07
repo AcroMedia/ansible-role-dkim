@@ -11,8 +11,6 @@ platforms:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
     pre_build_image: true
-#    instance_raw_config_args:
-#      - "vm.network 'forwarded_port', guest: 80, host: 8088"
 provisioner:
   name: ansible
   playbooks:

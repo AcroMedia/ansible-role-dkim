@@ -25,7 +25,7 @@
         pkg: perl-Getopt-Long
       when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == "8"
 
-- name:  Install role dependencies that acromedia.virtual-host will need
+- name:  Install role dependencies that acromedia.dkim will need
   hosts: all
   become: yes
   gather_facts: yes

@@ -11,5 +11,11 @@
         signing_table_pattern: '*@example.com'
     dkim_report_recipient: postmaster@example.com
     postfix_inet_interfaces: 127.0.0.1
+
+    dkim_apply_ubuntu_fix_by_dist:
+      Ubuntu_16.04: false
+      Ubuntu_18.04: true
+      Ubuntu_20.04: true
+    dkim_apply_ubuntu_fix: "{{ dkim_apply_ubuntu_fix_by_dist[ansible_distribution + '_' + ansible_distribution_version] }}"
   roles:
     - role: ansible-role-dkim

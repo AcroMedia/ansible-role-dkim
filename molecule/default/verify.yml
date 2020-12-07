@@ -4,10 +4,11 @@
   become: yes
 
   tasks:
-    - name: Ensure opendkim service is enabled and running
-      service:
-        name: opendkim
-        state: started
-        enabled: yes
+    - name: check  port 12301
+      shell: ss -tp state listening sport = 12301 | grep 'opendkim'
+      register: results
+
+    - name: See service returned
+      debug: var=results
 
 

@@ -5,3 +5,4 @@
       - opendkim
       - opendkim-tools
     state: present
+  register: dkim_install_result

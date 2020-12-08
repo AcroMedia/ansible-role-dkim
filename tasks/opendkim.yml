@@ -120,6 +120,7 @@
   shell: >
     /lib/opendkim/opendkim.service.generate && systemctl daemon-reload && service opendkim restart
   when: (dkim_apply_ubuntu_fix is defined) and (dkim_apply_ubuntu_fix == true)    #  Just send this on your command line as extra vars to fire it.
+  changed_when: false
 
 - name: Ensure opendkim service is enabled and running
   service:

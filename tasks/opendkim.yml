@@ -119,7 +119,7 @@
 # Original issue: https://bugs.debian.org/cgi-bin/bugreport.cgi?archive=no&bug=861169
   shell: >
     /lib/opendkim/opendkim.service.generate && systemctl daemon-reload && service opendkim restart
-  when: (dkim_apply_ubuntu_fix is defined) and (dkim_apply_ubuntu_fix == true)    #  Just send this on your command line as extra vars to fire it.
+  when: (dkim_apply_ubuntu_fix is defined) and (dkim_apply_ubuntu_fix == true) and (dkim_install_result is defined) and (dkim_install_result.changed)   #  Just send this on your command line as extra vars to fire it.
 
 - name: Ensure opendkim service is enabled and running
   service:

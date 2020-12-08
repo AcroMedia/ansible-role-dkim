@@ -1,0 +1,37 @@
+---
+- name: Prepare targets for converge
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      changed_when: false
+      when: ansible_facts['os_family'] == 'Debian'
+
+    - name: Update yum
+      yum:
+        update_cache: yes
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install openssl
+      yum:
+        pkg: openssl
+      when: ansible_os_family == 'RedHat'
+
+    - name: Install perl-Getopt-Long
+      yum:
+        pkg: perl-Getopt-Long
+      when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == "8"
+
+- name:  Install role dependencies that acromedia.dkim will need
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    postfix_inet_interfaces: 127.0.0.1
+  roles:
+    - contrib/acromedia.postfix
+
+

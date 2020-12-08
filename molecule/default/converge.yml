@@ -1,0 +1,24 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    dkim_domains:
+      - name: example.com
+        selector: default
+        private_key: ''  # Lets the role generate the private key.
+        signing_table_pattern: '*@example.com'
+    dkim_report_recipient: postmaster@example.com
+    postfix_inet_interfaces: 127.0.0.1
+
+    dkim_apply_ubuntu_fix_by_dist:
+      Ubuntu_16: false
+      Ubuntu_18: true
+      Ubuntu_20: true
+      CentOS_8: false
+      CentOS_7: false
+    dkim_apply_ubuntu_fix: "{{ dkim_apply_ubuntu_fix_by_dist[ansible_distribution + '_' + ansible_distribution_major_version] }}"
+
+  roles:
+    - role: ansible-role-dkim

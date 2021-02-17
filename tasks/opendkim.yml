@@ -2,12 +2,6 @@
 - name: Install OpenDKIM
   include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Configure opendkim socket
-  lineinfile: dest=/etc/default/opendkim regexp=^SOCKET= line='SOCKET="inet:{{ dkim_milter_port }}@localhost"'
-  notify:
-   - restart opendkim
-  when: ansible_os_family == 'Debian'
-
 - name: Create opendkim directory
   file:
     path: /etc/opendkim
@@ -113,6 +107,7 @@
   loop: "{{ dkim_domains }}"
   loop_control:
     label: "{{ item.selector + '._domainkey.' + item.name }}"
+  ignore_errors: "{{ ansible_check_mode }}"
 
 - name: Fix incomplete ubuntu18/systemd opendkim installation. See https://askubuntu.com/questions/1117330/opendkim-wont-start-cant-open-pid-file
 # And also, https://serverfault.com/a/847442/41284

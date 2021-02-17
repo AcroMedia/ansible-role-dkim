@@ -6,3 +6,13 @@
       - opendkim-tools
     state: present
   register: dkim_install_result
+
+- name: Configure path to opendkim socket (Debian)
+  lineinfile:
+    dest: /etc/default/opendkim
+    regexp: ^SOCKET=
+    line: >
+      SOCKET="inet:{{ dkim_milter_port }}@localhost"
+  ignore_errors: "{{ ansible_check_mode }}"
+  notify:
+   - restart opendkim

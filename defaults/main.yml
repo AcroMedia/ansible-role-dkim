@@ -15,3 +15,4 @@ dkim_trusted_hosts:
 dkim_canonicalization: relaxed/simple
 dkim_mode: sv
 dkim_generated_key_size: 1024
+dkim_pidfile_path: /var/run/opendkim/opendkim.pid

@@ -19,3 +19,5 @@ Mode                    {{ dkim_mode }}
 UserID                  opendkim:opendkim
 
 Socket                  inet:{{ dkim_milter_port }}@localhost
+
+PidFile               {{ dkim_pidfile_path }}
